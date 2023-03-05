@@ -17,6 +17,7 @@ urlpatterns = [
     path('cart/', views.cart, name="cart"),
     path('checkout/', views.checkout, name="checkout"),
     path('orders/', views.orders, name="orders"),
+    path('orders/<int:id>/generate/', views.generate_pdf, name="pdf"),
 
     #URL for Products
     path('product/<slug:slug>/', views.detail, name="product-detail"),

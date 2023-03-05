@@ -1,4 +1,3 @@
-import django
 from django.contrib.auth.models import User
 from store.models import Address, Cart, Category, Order, Product
 from django.shortcuts import redirect, render, get_object_or_404
@@ -6,11 +5,29 @@ from .forms import RegistrationForm, AddressForm
 from django.contrib import messages
 from django.views import View
 import decimal
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator # for Class Based Views
-
+from django.http import FileResponse , HttpResponse
+from django.views.generic import View
+from .preutils import html_to_pdf 
 
 # Create your views here.
+def generate_pdf(response , id):
+    order = Order.objects.get(id=id)
+    data = {
+        "user" : order.user,
+        "address" : order.address,
+        "product" : order.product,
+        "quantity" : order.quantity,
+        "total" : order.product.price * order.quantity,
+        "order_date" : order.ordered_date,
+        "status" : order.status
+    }        
+    pdf = html_to_pdf('store/result.html' , data)
+    return HttpResponse(pdf, content_type='application/pdf')
+
+
 
 def home(request):
     categories = Category.objects.filter(is_active=True, is_featured=True)[:3]
@@ -38,10 +55,12 @@ def all_categories(request):
     return render(request, 'store/categories.html', {'categories':categories})
 
 
-def category_products(request, slug):
+def category_products(request, slug , page):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(is_active=True, category=category)
     categories = Category.objects.filter(is_active=True)
+    paginator = Paginator(products, per_page=5)
+    page_object = paginator.get_page(page)
     context = {
         'category': category,
         'products': products,

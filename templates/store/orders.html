@@ -24,6 +24,7 @@
                       <th>Qty.</th>
                       <th>Ordered Date</th>
                       <th>Status</th>
+                      <th>Recipt</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -79,6 +80,11 @@
                         {% endif %}
                         
                         {{order.status}}
+                      </td>
+                      <td>
+                        <button class="btn btn-outline-gray">
+                          <a href="{% url 'store:pdf' id=order.id %}" target="_blank">Recipt</a>
+                        </button>
                       </td>
                     </tr>
                     {% endfor %}
