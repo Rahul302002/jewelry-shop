@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import datetime
 from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 
 # Create your models here.
@@ -129,7 +130,7 @@ class UserHistoryViewProduct(models.Model):
         User, verbose_name="User", on_delete=models.CASCADE, related_name="history")
     product = models.ForeignKey(
         Product, verbose_name="Product", on_delete=models.CASCADE)
-    added = models.DateTimeField(default=datetime.datetime.now())
+    added = models.DateTimeField(default=timezone.now())
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Created Date")
     updated_at = models.DateTimeField(

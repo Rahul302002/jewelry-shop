@@ -15,6 +15,7 @@ from django.shortcuts import reverse
 # import recommendation from utils
 from .utils import recommend, user_recommendation
 from django.core.mail import send_mail
+from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView, TemplateView
 
 # Create your views here.
 
@@ -148,6 +149,9 @@ def all_categories(request):
 def category_products(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(is_active=True, category=category)
+    q = request.GET.get('q', None)
+    if q:
+        products = Product.objects.filter(title__icontains=q)
     categories = Category.objects.filter(is_active=True)
     page = request.GET.get('page', 1)
     paginator = Paginator(products, per_page=5)
@@ -165,6 +169,37 @@ def category_products(request, slug):
     }
     return render(request, 'store/category_products.html', context)
 
+def all_products(request):
+    products = Product.objects.filter(is_active=True)
+    q = request.GET.get('q', None)
+    if q:
+        products = products.filter(title__icontains=q)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(products, per_page=5)
+    try:
+        page_object = paginator.page(page)
+    except PageNotAnInteger:
+        page_object = paginator.page(1)
+    except EmptyPage:
+        page_object = paginator.page(paginator.num_pages)
+    categories = Category.objects.filter(is_active=True)
+    context = {
+        'object_list': page_object,
+         'categories': categories,
+    }
+    return render(request, 'store/all_products.html', context)
+
+class ListAllProduct( ListView):
+    model = Product
+    paginate_by = 5
+    template_name = 'store/all_products.html'
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', None)
+        object_list = self.model.objects.all()
+        if q:
+            object_list = object_list.filter(title__icontains=q)
+        return object_list
 
 # Authentication Starts Here
 
@@ -298,16 +333,22 @@ def checkout(request):
     user = request.user
     address_id = request.GET.get('address')
 
-    address = get_object_or_404(Address, id=address_id)
+    address = Address.objects.filter(id=address_id)
+    if len(address) == 0:
+        return redirect('store:add-address')
     # Get all the products of User in Cart
     cart = Cart.objects.filter(user=user)
     if request.method == 'POST':
+        subjesct = "you have just brought these products"
+        message = f"you have ordered :- "
         for c in cart:
             # Saving all the products from Cart to Order
             Order(user=user, address=address,
                   product=c.product, quantity=c.quantity).save()
+            message += f" {c.product.title} with quantity : {c.quantity} "
             # And Deleting from Cart
             c.delete()
+        send_mail(subject=subjesct , message=message , from_email="vishwajeetv2003@gmail.com" , recipient_list=[user.email] )
         return redirect('store:orders')
     return render(request, "store/checkout.html")
 
@@ -325,3 +366,8 @@ def shop(request):
 
 def test(request):
     return render(request, 'store/test.html')
+
+
+
+def error_404_view(request, exception):
+    return render(request, '404.html')

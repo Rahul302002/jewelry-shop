@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+    {% block content %}
+    
+      <div class="container">
+        <section class="py-5">
+            <hr>
+                <form action="{% url 'store:category-products-all' %}" method="get" class="my-2">
+                    <input type="text" class="form-control" id="q" placeholder="Enter Medicine Name" name='q'>
+                </form>
+            <hr>
+          <div class="container p-0">
+            <div class="row">
+                <div class="col-lg-3 order-2 order-lg-1">
+                    <h5 class="text-uppercase mb-4">Categories</h5>
+    
+                    {% if categories %}
+                      {% for cat in categories %}
+                        <a href="{% url 'store:category-products' cat.slug %}">
+                          <div class="py-2 px-4 {% if category == cat %}bg-dark text-white {% else %}bg-light{% endif %} mb-3">
+                            <strong class="small text-uppercase font-weight-bold">{{cat.title}}</strong>
+                          </div>
+                        </a>
+                      {% endfor %}
+                    {% endif %}
+                    </div>
+              <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
+                <div class="row">
+                    {% for product in object_list %}
+                    
+                      <!-- PRODUCT-->
+                      <div class="col-lg-4 col-sm-6">
+                        <div class="product text-center">
+                          <div class="mb-3 position-relative">
+
+                            <div class="badge text-white badge-"></div>
+
+                            <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
+                              {% if product.product_image %}
+                                <img class="img-fluid w-100" src="{{product.product_image.url}}" alt="{{product.title}}">
+                              {% else %}
+                                <img class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
+                              {% endif %}
+                            </a>
+                        
+                            <div class="product-overlay">
+                              <ul class="mb-0 list-inline">
+                                <li class="list-inline-item m-0 p-0">
+                                  {% comment %} <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Add to cart</a> {% endcomment %}
+
+                                  <form action="{% url 'store:add-to-cart' %}">
+                                    <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
+                                    <button type="submit" class="btn btn-sm btn-dark">Add to Cart</button>
+                                  </form>
+                             
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          <h6> <a class="reset-anchor" href="{% url 'store:product-detail' product.slug %}">{{product.title}}</a></h6>
+                          <p class="small text-muted">₹{{product.price}}</p>
+                        </div>
+                      </div>
+
+                    {% endfor %}
+
+
+                </div>
+                <!-- PAGINATION-->
+                <nav aria-label="Page navigation example">
+                {% if object_list.has_other_pages %}
+                <ul class="pagination justify-content-center justify-content-lg-end">
+                    {% if object_list.has_previous %}
+                      <li class="page-item"><a class="page-link" href="?page={{ object_list.previous_page_number }}">&laquo;</a></li>
+                    {% endif %}
+                    <li class="page-item active"><a class="page-link" href="#">{{object_list.number}}</a></li>
+                    {% if object_list.has_next %}
+                      <li class="page-item"><a class="page-link" href="?page={{ object_list.next_page_number }}">&raquo;</a></li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
+              </nav>
+                <!-- <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center justify-content-lg-end">
+                    <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                  </ul>
+                </nav> -->
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      {% endblock content %}
