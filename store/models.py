@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.urls import reverse
 
 # Create your models here.
 
@@ -69,6 +70,10 @@ class Product(models.Model):
 
     def number_of_likes(self):
         return self.likes.count()
+    
+    def get_absolute_url(self):
+        return reverse("store:product-detail", args=[self.slug])
+    
 
 
 class Cart(models.Model):

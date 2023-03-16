@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load social_share %}
 {% load static %}
 
     {% block content %}
@@ -132,7 +133,7 @@
                                 <img class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
                               {% endif %}
                             </a>
-
+                        
                             <div class="product-overlay">
                               <ul class="mb-0 list-inline">
                                 <li class="list-inline-item m-0 p-0">
@@ -142,7 +143,12 @@
                                     <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
                                     <button type="submit" class="btn btn-sm btn-dark">Add to Cart</button>
                                   </form>
-
+                                  <div>
+                                    {% post_to_facebook object_or_url product %}
+                                    {% post_to_telegram object_or_url product %}
+                                    {% post_to_whatsapp object_or_url product %}
+                                  </div>
+      
                                 </li>
                               </ul>
                             </div>
