@@ -1,0 +1,49 @@
+<div id="chatBotContainer" class="chat-bar-collapsible">
+
+  <button id="chat-button" type="button" class="collapsible bg-primary ">
+      <div id="chat-button1" style="display: none; font-weight : bold " class="text-dark ">
+        Chat with Robo!
+        <i id="chat-icon" style="color: black; font-weight : bold !important ;" class="bi bi-chat-dots"></i>
+      </div>
+      <div id="chat-button2">
+        <i style="color: black; font-weight : bold !important ;" class="bi bi-chat-dots fa-lg" ></i>
+      </div>
+  </button>
+
+  <div class="content">
+      <div class="full-chat-block">
+          <div class="outer-container">
+              <div class="chat-container">
+                  <div id="chatbox">
+                      <h5 id="chat-timestamp"></h5>
+                      <p id="botStarterMessage" class="botText"><span>Loading...</span></p>
+                  </div>
+
+                  <div class="chat-bar-input-block">
+                      <div id="userInput">
+                          <input id="textInput" class="input-box" type="text" name="msg"
+                              placeholder="Tap 'Enter' to send a message">
+                          <p></p>
+                      </div>
+
+                      <div class="chat-bar-icons">
+                          <i id="chat-icon" style="color: crimson;" class="fa fa-fw fa-heart"
+                              onclick="heartButton()"></i>
+                          <i id="chat-icon" style="color: #333;" class="fa fa-fw fa-send"
+                              onclick="sendButton()"></i>
+                      </div>
+                  </div>
+
+                  <div id="chat-bar-bottom">
+                      <p></p>
+                  </div>
+
+              </div>
+          </div>
+
+      </div>
+  </div>
+
+</div>
+
+

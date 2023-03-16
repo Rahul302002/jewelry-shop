@@ -63,15 +63,20 @@
                 <li class="px-3 py-2 mb-1 bg-white"><strong class="text-uppercase">SKU:</strong><span class="ml-2 text-muted">{{product.sku}}</span></li>
                 <li class="px-3 py-2 mb-1 bg-white text-muted"><strong class="text-uppercase text-dark">Category:</strong><a class="reset-anchor ml-2" href="{% url 'store:category-products' product.category.slug %}">{{product.category}}</a></li>
                 <li class="px-3 py-2 mb-1 bg-white text-muted"><strong class="text-uppercase text-dark">Tags:</strong><a class="reset-anchor ml-2" href="#">Innovation</a></li>
+                <li class="px-3 py-2 mb-1 bg-white text-muted">
+                  <button class="btn btn-dark"  id="share-button" name="{{ product.get_absolute_url }}" >Share</button>
+                </li>
               </ul>
               <div class="px-3 py-2 mb-1 bg-white">
-                <h3>Share On</h3>
+                {% comment %} 
                 {% post_to_facebook link_class "Facebook" product %}
                 {% comment %} {% post_to_telegram object_or_url "Telegram" product %} {% endcomment %}
-                {% post_to_whatsapp link_class "Whatsapp" product %}
-                {% send_email "Check Out This Product : "   link_class product %}
+                {% comment %} {% post_to_whatsapp link_class "Whatsapp" product %}
+                {% send_email "Check Out This Product : "   link_class product %} 
+                {% endcomment %}
 
                 {% comment %} {% post_to_reddit object_or_url "Reddit" product %} {% endcomment %}
+                
               </div>
             </div>
             <div>
