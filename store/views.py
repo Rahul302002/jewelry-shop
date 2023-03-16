@@ -12,6 +12,9 @@ from django.http import FileResponse , HttpResponse
 from django.views.generic import View
 from .preutils import html_to_pdf 
 
+#import recommendation from utils
+from .utils import recommend
+
 # Create your views here.
 def generate_pdf(response , id):
     order = Order.objects.get(id=id)
@@ -41,13 +44,24 @@ def home(request):
 
 def detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
-    related_products = Product.objects.exclude(id=product.id).filter(is_active=True, category=product.category)
+    recommend_product = recommend(product.id)
+    related_products = Product.objects.filter(is_active=True , id__in=recommend_product )
     context = {
         'product': product,
         'related_products': related_products,
 
     }
     return render(request, 'store/detail.html', context)
+
+# def detail(request, slug):
+#     product = get_object_or_404(Product, slug=slug)
+#     related_products = Product.objects.exclude(id=product.id).filter(is_active=True, category=product.category)
+#     context = {
+#         'product': product,
+#         'related_products': related_products,
+
+#     }
+#     return render(request, 'store/detail.html', context)
 
 
 def all_categories(request):
