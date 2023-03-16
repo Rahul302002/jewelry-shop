@@ -6,9 +6,9 @@
 
     {% block content %}
 
-      <section class="py-5">
+      <section class="py-5 ">
         <div class="container">
-          <div class="row mb-5">
+          <div class="row mb-5 mt-5">
             <div class="col-lg-6">
               <!-- PRODUCT SLIDER-->
               <div class="row m-sm-0">
@@ -98,7 +98,7 @@
             </div>
           </div>
           <!-- DETAILS TABS-->
-          <ul class="nav nav-tabs border-0" id="myTab" role="tablist">
+          <ul class="nav nav-tabs border-0 pt-5" id="myTab" role="tablist">
             <li class="nav-item"><a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a></li>
             <li class="nav-item"><a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a></li>
           </ul>
@@ -143,14 +143,14 @@
  
 
           <!-- RELATED PRODUCTS-->
-          <h2 class="h5 text-uppercase mb-4">Related products</h2>
+          <h2 class="h5 text-uppercase mb-4 ">Related products</h2>
           <div class="row">
 
             {% if related_products %}
               {% for rp in related_products %}
               
                 <!-- PRODUCT-->
-                <div class="col-lg-3 col-sm-6">
+                <div class="col-lg-3 col-sm-6 product-card product-animation">
                   <div class="product text-center skel-loader">
                     <div class="d-block mb-3 position-relative">
                       <a class="d-block" href="{% url 'store:product-detail' rp.slug %}">

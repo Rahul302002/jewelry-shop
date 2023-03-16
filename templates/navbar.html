@@ -1,122 +1,65 @@
-<!--
+{% load static %}
 
-  {% load static %}
-  
-  <header class="header bg-white w-100 z-index-50  ">
-    <div class="">
-      <nav class="navbar navbar-expand-lg navbar-light z-index-50 py-3 px-lg-5 shadow-sm position-fixed w-100 "><a class="navbar-brand"  href="{% url 'store:home' %}"><span class="font-weight-bold text-uppercase text-dark"><img src="{% static 'img/jewelrylogo1.png' %}" alt=""
-        style=" margin-right:-6px ; width: 60px;height: 30px;">ABHUSHANBAZAAR</span></a>
+<!-- navbar-->
+      <header class="header bg-white w-100 z-index-50 ">
+        <div class="">
+          <nav class="navbar navbar-expand-lg navbar-light z-index-50 py-3 px-lg-5 text-primary shadow-sm position-fixed w-100 "><a class="navbar-brand"  href="{% url 'store:home' %}"><span class="font-weight-bold text-primary text-uppercase "><img src="{% static 'img/jewelrylogo1.png' %}" alt=""
+            style=" margin-right:-6px ; width: 60px;height: 30px;">ABHUSHANBAZAAR</span></a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                  <a class="nav-link active" href="{% url 'store:home' %}">Home</a>
+                  <!-- Link--><a class="nav-link" href="{% url 'store:home' %}">Home</a>
                 </li>
                 <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
                   <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
                     {% if categories_menu %}
-                    {% for cat_menu in categories_menu %}
-                    <a class="dropdown-item border-0 transition-link" href="{% url 'store:category-products' cat_menu.slug %}">{{cat_menu.title}}</a>
-                    {% endfor %}
+                      {% for cat_menu in categories_menu %}
+                        <a class="dropdown-item border-0 transition-link" href="{% url 'store:category-products' cat_menu.slug %}">{{cat_menu.title}}</a>
+                      {% endfor %}
                     {% endif %}
                     <hr>
                     <a class="dropdown-item border-0 transition-link" href="{% url 'store:all-categories' %}">All Categories</a>
                     
-                  </li>
-                </ul>
-                <ul class="navbar-nav ">
+                </li>
+              </ul>
+              <ul class="navbar-nav ">
                 <li class="nav-item">
                   <div id="google_translate_element"></div> 
                 </li>
-              </ul>
+              </ul>
               <ul class="navbar-nav "> 
                 {% if request.user.is_authenticated %}           
                   <li class="nav-item"><a class="nav-link" href="{% url 'store:cart' %}"> <i class="fas fa-dolly-flatbed mr-1 text-gray"></i>Cart<small class="text-gray">({{cart_items.count}})</small></a></li>
                   {% comment %} <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-user-alt mr-1 text-gray"></i>My Account</a></li> {% endcomment %}
-                  
+
                   <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-alt mr-1 text-gray"></i>My Account</a></a>
+                  
+                  <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
                     
-                    <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-                      
                       <a class="dropdown-item border-0 transition-link" href="{% url 'store:profile' %}">Profile</a>
                       <a class="dropdown-item border-0 transition-link" href="{% url 'store:cart' %}">Cart</a>
                       <a class="dropdown-item border-0 transition-link" href="{% url 'store:orders' %}">Orders</a>
                       <a class="dropdown-item border-0 transition-link" href="{% url 'store:password-change' %}">Change Password</a>
-                      
-                      <hr>
-                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:logout' %}">Log Out</a>
-                      
-                    </li>
-                    {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'store:login' %}">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'store:register' %}">Create Account</a></li>
-                    {% endif %}   
-                  </ul>
-                </div>
-              </nav>
+
+                    <hr>
+                    <a class="dropdown-item border-0 transition-link" href="{% url 'store:logout' %}">Log Out</a>
+                    
+                </li>
+                {% else %}
+                  <li class="nav-item"><a class="nav-link" href="{% url 'store:login' %}">Login</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url 'store:register' %}">Create Account</a></li>
+                {% endif %}   
+              </ul>
             </div>
-          </header>
-          
-        -->
+          </nav>
+        </div>
+      </header>
 
 
 
 
-      {% load static %}
 
-      <!-- navbar-->
-            <header class="header bg-white z-index-30 position-fixed w-100">
-              <div class="container z-index-30 px-0 px-lg-3">
-                <nav class="navbar navbar-expand-lg navbar-light py-3 z-index-30 px-lg-0 w-100"><a class="navbar-brand" href="{% url 'store:home' %}"><span class="font-weight-bold text-uppercase text-dark">AbhushanBazaar</span></a>
-                  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                  <div class="collapse navbar-collapse " id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                      <li class="nav-item">
-                        <!-- Link--><a class="nav-link active" href="{% url 'store:home' %}">Home</a>
-                      </li>
-                      <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
-                        <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-                          {% if categories_menu %}
-                            {% for cat_menu in categories_menu %}
-                              <a class="dropdown-item border-0 transition-link" href="{% url 'store:category-products' cat_menu.slug %}">{{cat_menu.title}}</a>
-                            {% endfor %}
-                          {% endif %}
-                          <hr>
-                          <a class="dropdown-item border-0 transition-link" href="{% url 'store:all-categories' %}">All Categories</a>
-                          
-                      </li>
-                    </ul>
-                    <ul class="navbar-nav ">
-                      <li class="nav-item">
-                        <div id="google_translate_element"></div> 
-                      </li>
-                    </ul>
-                    <ul class="navbar-nav ml-auto"> 
-                      {% if request.user.is_authenticated %}           
-                        <li class="nav-item"><a class="nav-link" href="{% url 'store:cart' %}"> <i class="fas fa-dolly-flatbed mr-1 text-gray"></i>Cart<small class="text-gray">({{cart_items.count}})</small></a></li>
-                        {% comment %} <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-user-alt mr-1 text-gray"></i>My Account</a></li> {% endcomment %}
-      
-                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-alt mr-1 text-gray"></i>My Account</a></a>
-                        
-                        <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-                          
-                            <a class="dropdown-item border-0 transition-link" href="{% url 'store:profile' %}">Profile</a>
-                            <a class="dropdown-item border-0 transition-link" href="{% url 'store:cart' %}">Cart</a>
-                            <a class="dropdown-item border-0 transition-link" href="{% url 'store:orders' %}">Orders</a>
-                            <a class="dropdown-item border-0 transition-link" href="{% url 'store:password-change' %}">Change Password</a>
-      
-                          <hr>
-                          <a class="dropdown-item border-0 transition-link" href="{% url 'store:logout' %}">Log Out</a>
-                          
-                      </li>
-                      {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'store:login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'store:register' %}">Create Account</a></li>
-                      {% endif %}   
-                    </ul>
-                  </div>
-                </nav>
-              </div>
-            </header>
-      
+
+
       
