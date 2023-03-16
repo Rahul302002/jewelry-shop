@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from store.models import Address, Cart, Category, Order, Product, UserHistoryViewProduct
 from django.shortcuts import redirect, render, get_object_or_404
-from .forms import RegistrationForm, AddressForm
+from .forms import RegistrationForm, AddressForm, EmailPostForm
 from django.contrib import messages
 from django.views import View
 import decimal
@@ -13,7 +13,8 @@ from django.views.generic import View
 from .preutils import html_to_pdf
 from django.shortcuts import reverse
 # import recommendation from utils
-from .utils import recommend
+from .utils import recommend, user_recommendation
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -33,18 +34,47 @@ def generate_pdf(response, id):
     return HttpResponse(pdf, content_type='application/pdf')
 
 
+def post_share(request, post_id):
+    # Retrieve post by id
+    post = get_object_or_404(Product, id=post_id)
+    sent = False
+    if request.method == 'POST':
+        # Form was submitted
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            post_url = request.build_absolute_uri(
+                post.get_absolute_url())
+            subject = f"{cd['name']} recommends you read " \
+                f"{post.title}"
+            message = f"Read {post.title} at {post_url}\n\n" \
+                f"{cd['name']}\'s comments: {cd['comments']}"
+            send_mail(subject, message, 'your_account@gmail.com',
+                      [cd['to']])
+            sent = True
+
+    else:
+    form = EmailPostForm()
+    return render(request, 'blog/post/share.html', {'post': post,
+                                                    'form': form})
+
+
 def home(request):
     categories = Category.objects.filter(is_active=True, is_featured=True)[:3]
     products = Product.objects.filter(is_active=True, is_featured=True)[:8]
     if request.user.is_authenticated:
         user_history = UserHistoryViewProduct.objects.filter(
-            user=request.user).order_by('-added').values_list('id', flat=True)
-        print(user_history)
+            user=request.user).order_by('-added').values_list('product_id', flat=True)[:4]
+        recommend_id = user_recommendation(user_history)
+        related_products = Product.objects.filter(
+            is_active=True, id__in=recommend_id)
+        print(recommend_id)
         context = {
             'categories': categories,
             'products': products,
-            'recommend': recommend
+            'recommend': related_products[:8]
         }
+        return render(request, 'store/index.html', context)
     context = {
         'categories': categories,
         'products': products,

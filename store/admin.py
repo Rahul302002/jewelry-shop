@@ -12,7 +12,7 @@ class AddressAdmin(admin.ModelAdmin):
 
 
 class UserHistory(admin.ModelAdmin):
-    list_display = ('user', 'product', 'added')
+    list_display = ('id' ,'user', 'product', 'added')
 
 
 class CategoryAdmin(admin.ModelAdmin):

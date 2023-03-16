@@ -38,6 +38,6 @@ def user_recommendation(products):
         distances = sorted(
             list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
         for i in distances[0:times]:
-            ids.append(df.iloc[i[0]].title_x)
+            ids.append(df.iloc[i[0]].id_x)
     random.shuffle(list(set(ids)))
     return ids
