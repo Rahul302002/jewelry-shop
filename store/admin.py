@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Address, Category, Product, Cart, Order, UserHistoryViewProduct
+from .models import Address, Category, Product, Cart, Order, UserHistoryViewProduct , Review
 
 # Register your models here.
 
@@ -13,6 +13,9 @@ class AddressAdmin(admin.ModelAdmin):
 
 class UserHistory(admin.ModelAdmin):
     list_display = ('id' ,'user', 'product', 'added')
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'content')
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -56,4 +59,5 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Cart, CartAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Review, ReviewAdmin)
 admin.site.register(UserHistoryViewProduct, UserHistory)

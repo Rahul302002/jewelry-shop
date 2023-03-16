@@ -1,5 +1,5 @@
 from django.contrib.auth import password_validation
-from store.models import Address
+from store.models import Address , Review
 from django import forms
 import django
 from django.contrib.auth.models import User
@@ -40,6 +40,11 @@ class AddressForm(forms.ModelForm):
         fields = ['locality', 'city', 'state']
         widgets = {'locality': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Popular Place like Restaurant, Religious Site, etc.'}), 'city': forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'City'}), 'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'State or Province'})}
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['content', 'rating']
 
 
 class PasswordChangeForm(PasswordChangeForm):

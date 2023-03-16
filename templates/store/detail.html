@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
+
 {% load social_share %}
 
     {% block content %}
@@ -111,40 +113,34 @@
               <div class="p-4 p-lg-5 bg-white">
                 <div class="row">
                   <div class="col-lg-8">
-                    <div class="media mb-3"><img class="rounded-circle" src="{% static 'img/customer-1.png' %}" alt="" width="50">
+                    <div class="media mb-3 card px-3 py-3 w-100">
+                      <form method="post" class="">
+                        {% csrf_token %}
+                        {{form|crispy}}
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                      </form>
+                    </div>
+                    {% for review in all_review %}
+                    <div class="media mb-3">
                       <div class="media-body ml-3">
-                        <h6 class="mb-0 text-uppercase">Jason Doe</h6>
-                        <p class="small text-muted mb-0 text-uppercase">20 May 2020</p>
+                        <h6 class="mb-0 text-uppercase">{{review.user.username}}</h6>
+                        <p class="small text-muted mb-0 text-uppercase">{{review.created_at}}</p>
                         <ul class="list-inline mb-1 text-xs">
+                          {% for i in review.rating.all %}                          
                           <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star-half-alt text-warning"></i></li>
+                          {% endfor %}
+
                         </ul>
                         <p class="text-small mb-0 text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                       </div>
                     </div>
-                    <div class="media"><img class="rounded-circle" src="{% static 'img/customer-2.png' %}" alt="" width="50">
-                      <div class="media-body ml-3">
-                        <h6 class="mb-0 text-uppercase">Jason Doe</h6>
-                        <p class="small text-muted mb-0 text-uppercase">20 May 2020</p>
-                        <ul class="list-inline mb-1 text-xs">
-                          <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
-                          <li class="list-inline-item m-0"><i class="fas fa-star-half-alt text-warning"></i></li>
-                        </ul>
-                        <p class="text-small mb-0 text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                      </div>
-                    </div>
+                    {% endfor %}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
+ 
 
           <!-- RELATED PRODUCTS-->
           <h2 class="h5 text-uppercase mb-4">Related products</h2>

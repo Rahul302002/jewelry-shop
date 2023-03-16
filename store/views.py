@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
-from store.models import Address, Cart, Category, Order, Product, UserHistoryViewProduct
+from store.models import Address, Cart, Category, Order, Product, UserHistoryViewProduct, Review
 from django.shortcuts import redirect, render, get_object_or_404
-from .forms import RegistrationForm, AddressForm, EmailPostForm
+from .forms import RegistrationForm, AddressForm, EmailPostForm, ReviewForm
 from django.contrib import messages
 from django.views import View
 import decimal
@@ -85,6 +85,18 @@ def home(request):
 
 def detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
+    review = ReviewForm()
+    all_review = Review.objects.filter(product=product)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST or None)
+        if form.is_valid():
+            cd = form.cleaned_data
+            content = cd['content']
+            rating = cd['rating']
+            rate = Review(user=request.user, product=product,
+                          content=content, rating=rating)
+            rate.save()
+        return HttpResponseRedirect(reverse('store:all-categories'))
     if request.user:
         history = UserHistoryViewProduct(user=request.user, product=product)
         history.save()
@@ -100,7 +112,9 @@ def detail(request, slug):
     context = {
         'product': product,
         'related_products': related_products,
-        "data": data
+        "data": data,
+        "form": review,
+        "all_review" : all_review
 
     }
     return render(request, 'store/detail.html', context)

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 from django.urls import reverse
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 # Create your models here.
 
@@ -70,10 +72,9 @@ class Product(models.Model):
 
     def number_of_likes(self):
         return self.likes.count()
-    
+
     def get_absolute_url(self):
         return reverse("store:product-detail", args=[self.slug])
-    
 
 
 class Cart(models.Model):
@@ -135,3 +136,13 @@ class UserHistoryViewProduct(models.Model):
         auto_now=True, verbose_name="Updated Date")
 
 
+class Review(models.Model):
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(5)])
+    content = models.CharField(max_length=500)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True,
+                                related_name='comments', related_query_name='comment')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True,
+                             related_name='comments', related_query_name='comment')
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
