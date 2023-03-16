@@ -53,14 +53,31 @@
                     <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
                     <button type="submit" class="btn btn-dark btn-lg btn-block h-100 d-flex align-items-center justify-content-center px-0">Add to Cart</button>
                   </form>
+                
 
                 </div>
+                
 
               <ul class="list-unstyled small d-inline-block">
                 <li class="px-3 py-2 mb-1 bg-white"><strong class="text-uppercase">SKU:</strong><span class="ml-2 text-muted">{{product.sku}}</span></li>
                 <li class="px-3 py-2 mb-1 bg-white text-muted"><strong class="text-uppercase text-dark">Category:</strong><a class="reset-anchor ml-2" href="{% url 'store:category-products' product.category.slug %}">{{product.category}}</a></li>
                 <li class="px-3 py-2 mb-1 bg-white text-muted"><strong class="text-uppercase text-dark">Tags:</strong><a class="reset-anchor ml-2" href="#">Innovation</a></li>
               </ul>
+            </div>
+            <div>
+              {% comment %} <form action="{% url 'store:product_Like' prodcut.id %}" method="POST">
+                {% csrf_token %}
+                {% if data.post_is_liked %}
+                <button >
+                  <i class="bi bi-hand-thumbs-up-fill fa-lg"></i>
+                </button>
+                {% else %}
+                <button>
+                  <i class="bi bi-hand-thumbs-up fa-lg"></i>
+                </button>
+                {% endif %}
+              </form> {% endcomment %}
+              
             </div>
           </div>
           <!-- DETAILS TABS-->
