@@ -5,7 +5,7 @@ from .forms import RegistrationForm, AddressForm
 from django.contrib import messages
 from django.views import View
 import decimal
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator # for Class Based Views
 from django.http import FileResponse , HttpResponse
@@ -55,15 +55,22 @@ def all_categories(request):
     return render(request, 'store/categories.html', {'categories':categories})
 
 
-def category_products(request, slug , page):
+def category_products(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(is_active=True, category=category)
     categories = Category.objects.filter(is_active=True)
+    page = request.GET.get('page', 1)
     paginator = Paginator(products, per_page=5)
-    page_object = paginator.get_page(page)
+    try:
+        page_object = paginator.page(page)
+    except PageNotAnInteger:
+        page_object = paginator.page(1)
+    except EmptyPage:
+        page_object = paginator.page(paginator.num_pages)
+
     context = {
         'category': category,
-        'products': products,
+        'products': page_object,
         'categories': categories,
     }
     return render(request, 'store/category_products.html', context)
