@@ -3,9 +3,9 @@ import random
 
 
 df = pickle.load(open(
-    "C:\\Users\\vishw\\Downloads\\django-jewelry-shop-main\\jewelry-shop\\store\\product_list.pkl", 'rb'))
+    "C:\\Users\\Priyanka\\Desktop\\petnet\\jewelry-shop\\store\\product_list.pkl", 'rb'))
 similarity = pickle.load(open(
-    "C:\\Users\\vishw\\Downloads\\django-jewelry-shop-main\\jewelry-shop\\store\\similarity.pkl", 'rb'))
+    "C:\\Users\\Priyanka\\Desktop\\petnet\\jewelry-shop\\store\\similarity.pkl", 'rb'))
 
 # with open('product_list.pkl','rb') as prodict:
 #     df = pickle.load(prodict)
