@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+      {% block content %}
+
+        <div class="container py-5">
+           <div class="py-5">
+            {% if products %}
+            {% for product in products %}
+            <div class="card mb-4 ">
+              <div class="card-body">
+                <h5 class="card-title">Product : {{ product.title }}</h5>
+                <!-- <p class="card-text">{{ product.short_description }}</p>
+                <img src="{{ product.product_image.url }}" alt="{{ product.title }}" class="img-fluid mb-3" style="max-height: 200px;">
+                 -->
+                <!-- Table for Product Reviews -->
+                <h6>Reviews:</h6>
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Rating</th>
+                        <th>Content</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for review in product.comments.all %}
+                        <tr>
+                          <td>{{ review.user.username }}</td>
+                          <td>{{ review.rating }}</td>
+                          <td>{{ review.content }}</td>
+                          <td>{{ review.created }}</td>
+                        </tr>
+                      {% empty %}
+                        <tr>
+                          <td colspan="4">No reviews yet.</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+            {% else %}
+                <h1>No products found.</h1>
+            {% endif %}
+           </div>
+          </div>
+{% endblock content %}

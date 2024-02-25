@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Address, Category, Product, Cart, Order, UserHistoryViewProduct , Review
-
+from django.contrib.auth.models import User
+from .models import Address, Category, Product, Cart, Order, UserHistoryViewProduct , Review , Vendor
+from django.contrib.auth.models import Group
 # Register your models here.
 
 
@@ -37,6 +38,33 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('title', 'category', 'short_description')
     prepopulated_fields = {"slug": ("title", )}
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+    
+    def has_change_permission(self, request, obj=None):
+        if not obj:
+            # Allow adding new products
+            return True
+        # Check if the user is the creator of the product
+        return obj.user == request.user or request.user.is_superuser
+    
+    def has_delete_permission(self, request, obj=None):
+        if not obj:
+            # No deletion permission for new products
+            return False
+        # Check if the user is the creator of the product or a superuser
+        return obj.user == request.user or request.user.is_superuser
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "user":
+            if not request.user.is_superuser:
+                kwargs["queryset"] = User.objects.filter(pk=request.user.pk)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 
 class CartAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'quantity', 'created_at')
@@ -53,6 +81,24 @@ class OrderAdmin(admin.ModelAdmin):
     list_per_page = 20
     search_fields = ('user', 'product')
 
+class VendorAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'email')
+    actions = ['make_staff']
+
+    def make_staff(self, request, queryset):
+        group = Group.objects.get(name='Vendor')  # Replace 'YourGroupName' with the name of your group
+        for vendor in queryset:
+            # Check if the vendor is already a staff member
+            if not vendor.user.groups.filter(name=group.name).exists():
+                vendor.user.groups.add(group)
+                vendor.user.is_staff = True
+                vendor.user.save()
+
+        self.message_user(request, "Selected vendors are now staff members.")
+
+    make_staff.short_description = "Make selected vendors staff"
+
+
 
 admin.site.register(Address, AddressAdmin)
 admin.site.register(Category, CategoryAdmin)
@@ -61,3 +107,4 @@ admin.site.register(Cart, CartAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(UserHistoryViewProduct, UserHistory)
+admin.site.register(Vendor , VendorAdmin)

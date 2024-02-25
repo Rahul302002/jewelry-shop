@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+    {% block content %}
+    <div class="container py-5">
+        <div class="col-md-8 offset-2 mt-5">
+
+        <h1 class="mb-5">Register Your Vendor Account</h1>
+        
+        
+        <div class="card mb-4" id="forms">
+          <div class="card-header py-4">
+            <small>
+            With this account, you can sell your products, market yourself and view products history.
+            </small>
+          </div>
+          <div class="card-body">
+
+            {% include 'partials/_messages.html' %}
+
+            <form method="post">
+              {% csrf_token %}
+
+              {{ form.as_div }}
+              <!-- <div class="form-group">
+                  <label for="vname">Vendor Name:</label>
+                  <input type="text" class="form-control" id="vname" name="name" required>
+              </div>
+              <div class="form-group">
+                  <label for="vloc">Vendor Location:</label>
+                  <input type="text" class="form-control" id="vloc" name="vloc">
+              </div>
+              <div class="form-group">
+                  <label for="vadd">Address:</label>
+                  <textarea class="form-control" rows="3" id="vadd" name="vadd" required></textarea>
+              </div>
+              <div class="form-group">
+                  <label for="vemail">Email address:</label>
+                  <input type="email" class="form-control" id="vemail" name="vemail" required>
+              </div>
+              <div class="form-group">
+                  <label for="vpwd">Password:</label>
+                  <input type="password" class="form-control" id="vpwd" name="vpwd" required>
+              </div> -->
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <hr>
+
+            Already have an account? <a href="{% url 'store:login' %}">Log In </a>
+            
+          </div>
+        </div>
+
+        </div>       
+      </div>
+
+    {% endblock content %}

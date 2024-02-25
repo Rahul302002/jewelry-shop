@@ -8,6 +8,17 @@ from django.utils import timezone
 
 # Create your models here.
 
+class Vendor(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100, blank=True)
+    address = models.TextField()
+    email = models.EmailField(unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE , null=True)
+    password = models.CharField(max_length=100)
+
+
+
+
 
 class Address(models.Model):
     user = models.ForeignKey(User, verbose_name="User",
@@ -48,6 +59,8 @@ class Product(models.Model):
     slug = models.SlugField(max_length=160, verbose_name="Product Slug")
     sku = models.CharField(max_length=255, unique=True,
                            verbose_name="Unique Product ID (SKU)")
+    user = models.ForeignKey(User, verbose_name="User",
+                             on_delete=models.CASCADE , null=True)
     short_description = models.TextField(verbose_name="Short Description")
     likes = models.ManyToManyField(User, related_name='like')
     detail_description = models.TextField(
@@ -76,6 +89,12 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse("store:product-detail", args=[self.slug])
+
+    def can_be_edited_by(self, user):
+        return user == self.user or user.is_superuser
+
+    def can_be_deleted_by(self, user):
+        return user == self.user or user.is_superuser
 
 
 class Cart(models.Model):

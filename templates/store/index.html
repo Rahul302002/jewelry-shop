@@ -20,7 +20,7 @@
         </ol>
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img class="d-block w-100" height="400px" src="{% static 'img/crousel1.png' %}" alt="First slide">
+            <img class="d-block w-100" height="400px" src="{% static 'img/crousel1.jpg' %}" alt="First slide">
           </div>
           <div class="carousel-item">
             <img class="d-block w-100" height="400px" src="{% static 'img/crousel2.jpg' %}" alt="Second Slide">
@@ -40,12 +40,12 @@
       <!-- HERO SECTION-->
       <div class="container">
         <section class="hero pb-3 bg-cover bg-center d-flex align-items-center"
-        style="background: url({% static 'img/hero-jewlrey-banner.jpg' %})">
+        style="background: url({% static 'img/darkbanner.jpg' %})">
         <div class="container py-5">
           <div class="row px-4 px-lg-5">
             <div class="col-lg-6">
-              <p class="text-muted small text-uppercase mb-2">New Inspiration 2020</p>
-              <h1 class="h2 text-uppercase mb-3 fontcolor">20% off on new season</h1><a class="btn btn-dark btn-design"
+              <p class="small text-uppercase text-white mb-2">New Inspiration 2020</p>
+              <h1 class="h2 text-uppercase mb-3 text-white">20% off on new season</h1><a class="btn btn-dark btn-design"
                 href="{% url 'store:all-categories' %}">Browse collections</a>
             </div>
           </div>
@@ -65,7 +65,7 @@
             <div class="col-md-4 mb-4 mb-md-0 product-card product-animation">
               <a class="category-item shadow" href="{% url 'store:category-products' category.slug %}">
                 {% if category.category_image %}
-                <img class="img-fluid" src="{{ category.category_image.url }}" alt="{{ category.title }}">
+                <img class="img-fluid" style="min-height: 585px;" src="{{ category.category_image.url }}" alt="{{ category.title }}">
                 {% else %}
                 <img class="img-fluid" src="{% static 'img/cat-img-1.jpg' %}" alt="{{ category.title }}">
                 {% endif %}
@@ -80,57 +80,6 @@
 
 
         <!-- TRENDING PRODUCTS-->
-        {% if recommend %}
-        <section class="py-5">
-          <header>
-            <p class="small text-muted small text-uppercase mb-1">Best Product For You</p>
-            <h2 class="h5 text-uppercase mb-4">Reccomendation</h2>
-          </header>
-          <div class="row">
-
-            {% if recommend %}
-              {% for product in recommend %}
-              
-                <!-- PRODUCT-->
-                <div class="col-xl-3 col-lg-4 col-sm-6 product-card product-animation" >
-                  <div class="product text-center">
-                    <div class="position-relative mb-3">
-
-                      <div class="badge text-white badge-"></div>
-                      
-                      <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
-                        {% if product.product_image %}
-                          <img class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{product.title}}">
-                        {% else %}
-                          <img class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
-                        {% endif %}
-                      </a>
-
-                      <div class="product-overlay">
-                        <ul class="mb-0 list-inline">
-                          <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                          <li class="list-inline-item m-0 p-0">
-                            {% comment %} <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Add to cart</a> {% endcomment %}
-
-                            <form action="{% url 'store:add-to-cart' %}">
-                              <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                              <button type="submit" class="btn btn-sm btn-dark">Add to Cart</button>
-                            </form>
-
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <h6> <a class="reset-anchor" href="detail.html">{{ product.title }}</a></h6>
-                    <p class="small text-muted">₹{{product.price}}</p>
-                  </div>
-                </div>
-
-              {% endfor %}
-            {% endif %}
-          </div>
-        </section>
-        {% endif %}
         <section class="py-5">
           <header>
             <p class="small text-muted small text-uppercase mb-1">Made the hard way</p>
@@ -181,19 +130,24 @@
 
             <div class="d-flex flex-wrap m-auto">
 
-              <div class="img-section m-auto">
-                <img src="{% static 'img/Collection_Harry_potter_1.jpg' %}" class=" mx-auto d-block fixed-img" alt="...">
+            <div class="row">
+              <div class="col-md-4 p-3">
+                <div class="img-section m-auto">
+                  <img src="{% static 'img/nykaapromo.jpg' %}" style="min-height: 480px;" class=" mx-auto d-block fixed-img" alt="...">
+                </div>
               </div>
-              <div class="img-section m-auto">
-                <img src="{% static 'img/Collection_ENVOUE.jpg' %}" class=" mx-auto d-block fixed-img fixed-img-2" alt="...">
+              <div class="col-md-4 p-1">
+                <div class="img-section m-auto">
+                  <img src="{% static 'img/sugarpromo.jpg' %}" style="min-height: 480px;" class=" mx-auto d-block fixed-img fixed-img-2" alt="...">
+                </div>
               </div>
-              <div class="img-section m-auto">
-                <img src="{% static 'img/Collection_Blaze.jpg' %}" class=" mx-auto d-block fixed-img" alt="...">
-              </div>      
+              <div class="col-md-4 p-3">
+                <div class="img-section m-auto">
+                  <img src="{% static 'img/lakmepromo.jpg' %}" style="min-height: 480px;" class=" mx-auto d-block fixed-img" alt="...">
+                </div>
+              </div>
+            </div>       
             </div>
-      
-            
-
           </div>
         </section>
 
@@ -268,11 +222,11 @@
         </section>
 
         <!-- Vendor -->
-        <section class="hero pb-3 bg-cover bg-center d-flex align-items-center mb-4" style="background-image: url({% static 'img/hero-jewlrey-banner.jpg' %});">
+        <section class="hero pb-3 bg-cover bg-center d-flex align-items-center mb-4" style="background-image: url({% static 'img/darkbanner.jpg' %});">
           <div class="container py-5 text-center">
             <div class="float-left ps-5">
-              <h3>Want to work with us?</h3>
-              <a href="#"><button class="btn btn-success">Join Us</button></a>
+              <h3 class="text-white">Want to work with us?</h3>
+              <a style="color: black;" class="text-decoration-none" href="{% url 'store:vendorlogin' %}"><button type="button" class="btn btn-primary">Join Us</button></a>
             </div>
           </div>
         </section>

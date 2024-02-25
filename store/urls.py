@@ -9,6 +9,7 @@ app_name = 'store'
 
 urlpatterns = [
     path('', views.home, name="home"),
+    path('product_reviews/', views.product_and_review, name="product_and_review"),
     # URL for Cart and Checkout
     path('add-to-cart/', views.add_to_cart, name="add-to-cart"),
     path('remove-cart/<int:cart_id>/', views.remove_cart, name="remove-cart"),
@@ -56,6 +57,9 @@ urlpatterns = [
 
     path('product/test/', views.test, name="test"),
     path('*', views.error_404_view, name="error-page"),
+
+    # URL for Vendor Login
+    path('vendor/login', views.vendor_registration, name="vendorlogin")    
 
 
 ]

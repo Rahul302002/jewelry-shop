@@ -16,6 +16,8 @@ from django.shortcuts import reverse
 from .utils import recommend, user_recommendation
 from django.core.mail import send_mail
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView, TemplateView
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 
@@ -60,22 +62,24 @@ def generate_pdf(response, id):
 #                                                     'form': form})
 
 
+
+
 def home(request):
     categories = Category.objects.filter(is_active=True, is_featured=True)[:3]
     products = Product.objects.filter(is_active=True, is_featured=True)[:8]
-    if request.user.is_authenticated:
-        user_history = UserHistoryViewProduct.objects.filter(
-            user=request.user).order_by('-added').values_list('product_id', flat=True)[:4]
-        recommend_id = user_recommendation(user_history)
-        related_products = Product.objects.filter(
-            is_active=True, id__in=recommend_id)
-        print(recommend_id)
-        context = {
-            'categories': categories,
-            'products': products,
-            'recommend': related_products[:8]
-        }
-        return render(request, 'store/index.html', context)
+    # if request.user.is_authenticated:
+    #     user_history = UserHistoryViewProduct.objects.filter(
+    #         user=request.user).order_by('-added').values_list('product_id', flat=True)[:4]
+    #     recommend_id = user_recommendation(user_history)
+    #     related_products = Product.objects.filter(
+    #         is_active=True, id__in=recommend_id)
+    #     print(recommend_id)
+    #     context = {
+    #         'categories': categories,
+    #         'products': products,
+    #         'recommend': related_products[:8]
+    #     }
+    #     return render(request, 'store/index.html', context)
     context = {
         'categories': categories,
         'products': products,
@@ -84,6 +88,34 @@ def home(request):
     return render(request, 'store/index.html', context)
 
 
+def vendorlogin(request):
+    return render(request, 'account/vendorlogin.html')
+
+
+from .forms import VendorForm
+
+@login_required
+def vendor_registration(request):
+    if request.method == 'POST':
+        form = VendorForm(request.POST)
+        if form.is_valid():
+            # Save the vendor data to the database
+            vendor = form.save(commit=False)
+            vendor.user = request.user
+            vendor.save()
+
+            # Send notification to admin
+            # admin_email = settings.ADMIN_EMAIL # You need to define ADMIN_EMAIL in your settings.py
+            # subject = 'New Vendor Registration Request'
+            # message = 'A new vendor has registered. Please review their details.'
+            # send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [admin_email])
+
+            return redirect('store:home')
+    else:
+        form = VendorForm()
+    return render(request, 'account/vendorlogin.html', {'form': form})
+
+@login_required             
 def detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
     review = ReviewForm()
@@ -107,12 +139,12 @@ def detail(request, slug):
         liked = True
     data['number_of_likes'] = product.number_of_likes()
     data['post_is_liked'] = liked
-    recommend_product = recommend(product.id)
-    related_products = Product.objects.filter(
-        is_active=True, id__in=recommend_product)
+    # recommend_product = recommend(product.id)
+    # related_products = Product.objects.filter(
+    #     is_active=True)
     context = {
         'product': product,
-        'related_products': related_products,
+        # 'related_products': related_products,
         "data": data,
         "form": review,
         "all_review" : all_review
@@ -201,7 +233,16 @@ class ListAllProduct( ListView):
             object_list = object_list.filter(title__icontains=q)
         return object_list
 
+
 # Authentication Starts Here
+@login_required
+def user_products(request):
+    user = request.user
+    products = Product.objects.filter(user=user)
+    context = {
+        'products': products
+    }
+    return render(request, 'store/user_products.html', context)
 
 class RegistrationView(View):
     def get(self, request):
@@ -333,10 +374,7 @@ def checkout(request):
     user = request.user
     address_id = request.GET.get('address')
 
-    address = Address.objects.filter(id=address_id)
-    if len(address) == 0:
-        return redirect('store:add-address')
-    # Get all the products of User in Cart
+    address = Address.objects.get(id=address_id)
     cart = Cart.objects.filter(user=user)
     if request.method == 'POST':
         subjesct = "you have just brought these products"
@@ -348,7 +386,7 @@ def checkout(request):
             message += f" {c.product.title} with quantity : {c.quantity} "
             # And Deleting from Cart
             c.delete()
-        send_mail(subject=subjesct , message=message , from_email="vishwajeetv2003@gmail.com" , recipient_list=[user.email] )
+        # send_mail(subject=subjesct , message=message , from_email="vishwajeetv2003@gmail.com" , recipient_list=[user.email] )
         return redirect('store:orders')
     return render(request, "store/checkout.html")
 
@@ -371,3 +409,19 @@ def test(request):
 
 def error_404_view(request, exception):
     return render(request, '404.html')
+
+
+@login_required
+def product_and_review(request):
+    if not request.user.is_staff:
+        messages.warning(request, "You are not authorized to access this page.")
+        return redirect('store:home')
+
+    if request.user.is_superuser:
+        products = Product.objects.all()
+    else:
+        products = Product.objects.filter(user = request.user)
+        if not products:
+            messages.warning(request, "You have not added any products yet.")
+            return redirect('store:home')
+    return render(request, 'store/product_and_review.html', {'products': products})
