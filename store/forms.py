@@ -59,6 +59,11 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['content', 'rating']
+        widgets={
+            'content': forms.Textarea(attrs={'class': 'form-control w-100', 'placeholder': 'Write a review'}),
+            'rating': forms.NumberInput(attrs={'class': 'form-control w-100', 'placeholder': 'Rating (1-5)' , "min":1, "max":5 })
+        
+        }
 
 
 class PasswordChangeForm(PasswordChangeForm):

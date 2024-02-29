@@ -81,6 +81,21 @@ class OrderAdmin(admin.ModelAdmin):
     list_per_page = 20
     search_fields = ('user', 'product')
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            return queryset
+        else:
+            vendor = Vendor.objects.get(user=request.user)
+            return queryset.filter(vendor=vendor)
+        
+    def save_model(self, request, obj, form, change):
+        # Assign the current user to the 'user' field when saving a new object
+        if not obj.pk:
+            obj.user = request.user
+        super().save_model(request, obj, form, change)
+
+
 class VendorAdmin(admin.ModelAdmin):
     list_display = ('name', 'location', 'email')
     actions = ['make_staff']

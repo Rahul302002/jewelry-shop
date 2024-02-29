@@ -4,49 +4,94 @@
       {% block content %}
 
         <div class="container py-5">
-           <div class="py-5">
-            {% if products %}
-            {% for product in products %}
-            <div class="card mb-4 ">
-              <div class="card-body">
-                <h5 class="card-title">Product : {{ product.title }}</h5>
-                <!-- <p class="card-text">{{ product.short_description }}</p>
-                <img src="{{ product.product_image.url }}" alt="{{ product.title }}" class="img-fluid mb-3" style="max-height: 200px;">
-                 -->
-                <!-- Table for Product Reviews -->
-                <h6>Reviews:</h6>
-                <div class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>User</th>
-                        <th>Rating</th>
-                        <th>Content</th>
-                        <th>Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for review in product.comments.all %}
-                        <tr>
-                          <td>{{ review.user.username }}</td>
-                          <td>{{ review.rating }}</td>
-                          <td>{{ review.content }}</td>
-                          <td>{{ review.created }}</td>
-                        </tr>
-                      {% empty %}
-                        <tr>
-                          <td colspan="4">No reviews yet.</td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
+          <div class="py-5">
+            
+             {% if orders %}
+             <form method="GET" action="{% url 'store:product_and_review' %}" class="row g-2 align-items-end mb-3">
+                <div class="col-auto">
+                    <label for="user" class="form-label">Filter by User:</label>
+                    <select id="user" name="user" class="form-select">
+                        <option value="">All Users</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-              </div>
+                <div class="col-auto">
+                    <label for="start_date" class="form-label">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control">
+                </div>
+                <div class="col-auto">
+                    <label for="end_date" class="form-label">End Date:</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                </div>
+                <button class="col-auto btn btn-primary" onclick="printContainer()">Print</button>
+            </form>
+            
+          
+            <div id="container">
+              <h1>Order Information</h1>
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th>Ordered By</th>
+                          <th>Product Name</th>
+                          <th>Image</th>
+                          <th>Quantity</th>
+                          <th>Price</th>
+                          <th>Order Date</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for order in orders %}
+                      <tr>
+                          <td>{{ order.user }}</td>
+                          <td>{{ order.product.title }}</td>
+                          <td><img src="{{ order.product.product_image.url }}" alt="{{ order.product.name }}" style="max-width: 100px;"></td>
+                          <td>{{ order.quantity }}</td>
+                          <td>{{ order.product.price }}</td>
+                          <td>{{ order.ordered_date }}</td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+
             </div>
-          {% endfor %}
-            {% else %}
-                <h1>No products found.</h1>
-            {% endif %}
+          {% else %}
+          {% if messages %}
+    {% for message in messages %}
+        <div class="container mt-5 alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endif %}
+              <h1>No products found.</h1>
+          {% endif %}
+          
            </div>
           </div>
+
+    <script>
+        function printContainer() {
+    var container = document.getElementById("container");
+    var containerHTML = container.innerHTML;
+
+    // Create a new window to print the container contents
+    var printWindow = window.open('', '_blank');
+    printWindow.document.write('<html><head><title>Container Contents</title></head><body>');
+    printWindow.document.write(containerHTML);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+
+    // Call the print function
+    printWindow.print();
+}
+
+    </script>
 {% endblock content %}

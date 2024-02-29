@@ -16,8 +16,8 @@ class Vendor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE , null=True)
     password = models.CharField(max_length=100)
 
-
-
+    def __str__(self):
+        return self.name
 
 
 class Address(models.Model):
@@ -137,6 +137,7 @@ class Order(models.Model):
     quantity = models.PositiveIntegerField(verbose_name="Quantity")
     ordered_date = models.DateTimeField(
         auto_now_add=True, verbose_name="Ordered Date")
+    vendor = models.ForeignKey(Vendor, verbose_name="Vendor", null=True , blank = True , on_delete=models.SET_NULL)
     status = models.CharField(
         choices=STATUS_CHOICES,
         max_length=50,

@@ -114,10 +114,10 @@
                 <div class="row">
                   <div class="col-lg-8">
                     <div class="media mb-3 card px-3 py-3 w-100">
-                      <form method="post" class="">
+                      <form method="post" class="w-100">
                         {% csrf_token %}
-                        {{form|crispy}}
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        {{form.as_div}}
+                        <button type="submit" class="btn btn-primary mt-4">Submit</button>
                       </form>
                     </div>
                     {% for review in all_review %}

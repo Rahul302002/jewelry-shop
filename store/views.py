@@ -65,7 +65,7 @@ def generate_pdf(response, id):
 
 
 def home(request):
-    categories = Category.objects.filter(is_active=True, is_featured=True)[:3]
+    categories = Category.objects.filter(is_active=True)[:3]
     products = Product.objects.filter(is_active=True, is_featured=True)[:8]
     # if request.user.is_authenticated:
     #     user_history = UserHistoryViewProduct.objects.filter(
@@ -368,11 +368,16 @@ def minus_cart(request, cart_id):
             cp.save()
     return redirect('store:cart')
 
+from .models import Vendor
 
 @login_required
 def checkout(request):
     user = request.user
     address_id = request.GET.get('address')
+
+    if not address_id:
+        messages.warning(request, "Please Select a Address.")
+        return redirect("store:cart")
 
     address = Address.objects.get(id=address_id)
     cart = Cart.objects.filter(user=user)
@@ -381,8 +386,11 @@ def checkout(request):
         message = f"you have ordered :- "
         for c in cart:
             # Saving all the products from Cart to Order
+            product_vendor = c.product.user
+            vendor = Vendor.objects.get(user = product_vendor)
+
             Order(user=user, address=address,
-                  product=c.product, quantity=c.quantity).save()
+                  product=c.product, quantity=c.quantity , vendor = vendor).save()
             message += f" {c.product.title} with quantity : {c.quantity} "
             # And Deleting from Cart
             c.delete()
@@ -411,6 +419,61 @@ def error_404_view(request, exception):
     return render(request, '404.html')
 
 
+# @login_required
+# def product_and_review(request):
+#     if not request.user.is_staff:
+#         messages.warning(request, "You are not authorized to access this page.")
+#         return redirect('store:home')
+
+#     if request.user.is_superuser:
+#         products = Product.objects.all()
+#     else:
+#         products = Product.objects.filter(user = request.user)
+#         if not products:
+#             messages.warning(request, "You have not added any products yet.")
+#             return redirect('store:home')
+#     return render(request, 'store/product_and_review.html', {'products': products})
+
+from django.db.models import Count
+
+# @login_required
+# def product_and_review(request):
+#     if not request.user.is_staff:
+#         messages.warning(request, "You are not authorized to access this page.")
+#         return redirect('store:home')
+
+#     if request.user.is_superuser:
+#         products = Product.objects.all()
+#     else:
+#         products = Product.objects.filter(user = request.user)
+#         if not products:
+#             messages.warning(request, "You have not added any products yet.")
+#             return redirect('store:home')
+#         product_info = []
+#         for product in products:
+#             # Count the number of orders for each product
+#             num_orders = Order.objects.filter(product=product).count()
+            
+#             # Create a dictionary with product info
+#             product_dict = {
+#                 'name': product.name,
+#                 'image': product.image.url,  # Assuming 'image' is a FileField or ImageField
+#                 'quantity': num_orders,
+#             }
+            
+#             product_info.append(product_dict)
+#             return render(request, 'store/product_and_review.html', {'products': product_info})
+#         if not product_info:
+#             messages.warning(request, "You have not added any products yet.")
+#             return redirect('store:home')
+#     return render(request, 'store/product_and_review.html', {'products': products})
+from django.utils.timezone import make_aware
+from datetime import datetime, timedelta
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Order, Vendor
+
 @login_required
 def product_and_review(request):
     if not request.user.is_staff:
@@ -418,10 +481,62 @@ def product_and_review(request):
         return redirect('store:home')
 
     if request.user.is_superuser:
-        products = Product.objects.all()
-    else:
-        products = Product.objects.filter(user = request.user)
-        if not products:
-            messages.warning(request, "You have not added any products yet.")
-            return redirect('store:home')
-    return render(request, 'store/product_and_review.html', {'products': products})
+        orders = Order.objects.all()
+        users = User.objects.all()  
+        user_id = request.GET.get('user')
+        if user_id:
+            orders = orders.filter(user_id=user_id)
+
+        # Filter by date range
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        if start_date and end_date:
+            start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+            end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d')) + timedelta(days=1)
+            orders = orders.filter(ordered_date__range=[start_date, end_date])
+
+        if not orders.exists():
+            messages.warning(request, "No orders found.")
+            return render(request, 'store/product_and_review.html', {"no" : "No Orders Found"})
+        return render(request, 'store/product_and_review.html', {'orders': orders, 'users': users})
+
+    # Filter by user
+    vendor = Vendor.objects.get(user=request.user)
+    orders = Order.objects.filter(vendor=vendor)
+    user_id = request.GET.get('user')
+    if user_id:
+        orders = orders.filter(user_id=user_id)
+
+    # Filter by date range
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    if start_date and end_date:
+        start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+        end_date = make_aware(datetime.strptime(end_date, '%Y-%m-%d')) + timedelta(days=1)
+        orders = orders.filter(ordered_date__range=[start_date, end_date])
+
+    if not orders.exists():
+        messages.warning(request, "No orders found.")
+        return render(request, 'store/product_and_review.html', {"no" : "No Orders Found"})
+
+    users = User.objects.all()  # Get all users for the user filter
+
+    return render(request, 'store/product_and_review.html', {'orders': orders, 'users': users})
+
+
+# @login_required
+# def product_and_review(request):
+#     if not request.user.is_staff:
+#         messages.warning(request, "You are not authorized to access this page.")
+#         return redirect('store:home')
+
+#     if request.user.is_superuser:
+#         orders = Order.objects.all()
+#         return render(request, 'store/product_and_review.html', {'orders': orders})
+#     vendor = Vendor.objects.get(user=request.user)
+#     orders = Order.objects.filter(vendor=vendor)
+
+#     if not orders:
+#         messages.warning(request, "You have not added any products yet.")
+#         return redirect('store:home')
+#     return render(request, 'store/product_and_review.html', {'orders': orders})
